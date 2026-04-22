@@ -1,0 +1,33 @@
+## Xcode
+build/
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+!default.xcworkspace
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+## Swift / SwiftPM
+.build/
+.swiftpm/
+Packages/
+Package.pins
+Package.resolved
+
+## CocoaPods / Carthage (not used, but harmless)
+Pods/
+Carthage/Build/
+
+## macOS
+.DS_Store
+
+## Editors
+.vscode/
+.idea/
+
+## Secrets
+*.p8
+*.p12
+*.mobileprovision
