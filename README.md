@@ -24,6 +24,10 @@ SwiftData persistence with CloudKit sync over the user's private database, so yo
 
 ## Build
 
+Two ways to build and run, depending on the tools you have.
+
+### Xcode (full app — recommended)
+
 The Xcode project is generated from `project.yml` using [XcodeGen](https://github.com/yonaskolb/XcodeGen):
 
 ```sh
@@ -32,10 +36,28 @@ xcodegen generate
 open Quotey.xcodeproj
 ```
 
-### Tests
+This is the only path that builds the Share Extension and the unit tests.
 
 ```sh
 xcodebuild test \
   -scheme Quotey \
   -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
 ```
+
+### Swift Playgrounds (iPad or Mac)
+
+A self-contained App Playground lives at `QuoteyPlayground.swiftpm/`. Double-click it on macOS or copy it to the Files app on iPad and open it in Swift Playgrounds.
+
+It mirrors the full app **except**:
+
+- No Share Extension (App Playgrounds can't host app extensions).
+- No unit tests (run them from Xcode).
+- No App Group fallback — the SwiftData store lives in the app's Application Support directory.
+
+CloudKit sync works, but Swift Playgrounds does not declare iCloud via `Package.swift`, so enable it from the Playground's **Capabilities** panel after opening:
+
+1. Tap the ⓘ button next to the run button.
+2. Open **Capabilities**.
+3. Turn on **iCloud → CloudKit** and set the container to `iCloud.com.quotey.playground` (or any ID you own).
+
+The `.swiftpm` duplicates the source under `QuoteyPlayground.swiftpm/`. When you change a file under `Quotey/`, copy it over (or keep your edits in one place and sync the other after).
