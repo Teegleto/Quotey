@@ -1,13 +1,12 @@
 # Quotey
 
-An iOS app for capturing quotes with their context and learning them by heart.
+An iOS app for capturing quotes with their context and learning them by heart. Built as a single Swift Playgrounds App Project so it opens without Xcode.
 
 ## Capture
 
 - Type or paste a quote directly.
 - Scan text from a printed page with VisionKit's `DataScannerViewController`.
 - Bulk-import a library from CSV or JSON.
-- Share text from any app (Safari, Books, Notes, …) into Quotey via the Share Extension.
 
 ## Learn
 
@@ -20,44 +19,46 @@ Four practice modes, all driven off the same SwiftData store:
 
 ## Sync
 
-SwiftData persistence with CloudKit sync over the user's private database, so your library follows you across iPhone, iPad, and Mac Catalyst.
+SwiftData persistence with optional CloudKit sync over the user's private database, so your library follows you across iPhone, iPad, and Mac.
 
-## Build
+## Open it
 
-Two ways to build and run, depending on the tools you have.
-
-### Xcode (full app — recommended)
-
-The Xcode project is generated from `project.yml` using [XcodeGen](https://github.com/yonaskolb/XcodeGen):
+### On Mac
 
 ```sh
-brew install xcodegen
-xcodegen generate
-open Quotey.xcodeproj
+git clone <this repo>
+open Quotey/Quotey.swiftpm
 ```
 
-This is the only path that builds the Share Extension and the unit tests.
+Swift Playgrounds (free on the Mac App Store) launches and loads the project.
 
-```sh
-xcodebuild test \
-  -scheme Quotey \
-  -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
-```
+### On iPad
 
-### Swift Playgrounds (iPad or Mac)
+1. Clone the repo on your Mac.
+2. Drop `Quotey.swiftpm` into iCloud Drive (or AirDrop it to the iPad).
+3. In the Files app on iPad, tap `Quotey.swiftpm` — Swift Playgrounds opens it.
 
-A self-contained App Playground lives at `QuoteyPlayground.swiftpm/`. Double-click it on macOS or copy it to the Files app on iPad and open it in Swift Playgrounds.
+### Enable CloudKit sync (optional)
 
-It mirrors the full app **except**:
-
-- No Share Extension (App Playgrounds can't host app extensions).
-- No unit tests (run them from Xcode).
-- No App Group fallback — the SwiftData store lives in the app's Application Support directory.
-
-CloudKit sync works, but Swift Playgrounds does not declare iCloud via `Package.swift`, so enable it from the Playground's **Capabilities** panel after opening:
+Camera and photo-library permissions are already declared in `Package.swift`. CloudKit has to be turned on in the Swift Playgrounds UI:
 
 1. Tap the ⓘ button next to the run button.
 2. Open **Capabilities**.
-3. Turn on **iCloud → CloudKit** and set the container to `iCloud.com.quotey.playground` (or any ID you own).
+3. Turn on **iCloud → CloudKit**, container `iCloud.com.quotey.playground` (or replace with an ID you own).
 
-The `.swiftpm` duplicates the source under `QuoteyPlayground.swiftpm/`. When you change a file under `Quotey/`, copy it over (or keep your edits in one place and sync the other after).
+Without CloudKit the app still works — data just stays on the current device.
+
+## Layout
+
+```
+Quotey.swiftpm/
+├── Package.swift             # iOS 17 app, camera + photo capabilities
+├── QuoteyApp.swift           # @main, ModelContainer w/ CloudKit
+├── Models/                   # Quote, Tag, ReviewLog (CloudKit-safe)
+├── Services/                 # SRSScheduler, FillBlankGenerator, TextDiff, OCR, Import/Export
+└── Features/
+    ├── Library/              # list, detail, editor
+    ├── Capture/              # DataScanner + CSV/JSON importer
+    ├── Study/                # SRS + self-quiz + fill-blank + recitation
+    └── Settings/             # library stats, JSON export
+```
